@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Task Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            text-align: center;
+            padding-top: 60px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        progress {
+            width: 60%;
+            height: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #status {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h2>Concurrent Task Progress Monitor</h2>
+
+    <progress id="progressBar" value="0" max="100"></progress>
+    <p id="status">Waiting for updates...</p>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Receive progress updates from the server
+        socket.on('progressUpdate', (progress) => {
+            const bar = document.getElementById('progressBar');
+            const status = document.getElementById('status');
+            bar.value = progress;
+            status.textContent = `Progress: ${progress}%`;
+        });
+
+        // When the task is complete
+        socket.on('progressComplete', () => {
+            const status = document.getElementById('status');
+            status.textContent = 'Task completed!';
+        });
+    </script>
+</body>
+</html>
